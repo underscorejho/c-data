@@ -18,10 +18,15 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 
+typedef struct {
+  int length = 0;
+  void *list_arr;
+} List;
+
 ///////////////////////////////////////////////////////////////////////////////
 
 
-int count(char *str)
+int list_count(char *str)
 {
   int count = 1; // offset 1 for comma count
   int i = 0;
@@ -29,7 +34,7 @@ int count(char *str)
 
   for(i = 0; i < strlen(str); i++)
   {
-  // escape after backslashes? ////
+//// escape after backslashes? ////
 //    if(str[i] == '\\')
 //      continue;
     if(str[i] == '\'')
@@ -45,52 +50,94 @@ int count(char *str)
   return count;
 }
 
-void parse(char *str, void *ptrs)
+void list_parse(char *str, void *ptrs)
 {
   int i = 0; // string index
   int n = 0; // list index
 
-  void item;
-  
-  for(n = 0; n < count(str); n++)
+  int j = 0; // counter variable
+
+  int str_length = 0;
+
+  char *int_string;
+
+  for(n = 0; n < list_count(str); n++)
   {
-    while(str[i] != ',')
+    if(str[i] == ',')
+      continue;
+    if(str[i] == '\'') // handle string
     {
-      if(str[i] == '\'')
-        HANDLE STRING /////////////
-      else if(IS A NUMBER)
-        ptrs[n] = malloc(sizeof((int)str[i]));
+      for(j = 1; str[i+j] != '\''; j++)          // get length of string
+        str_length = j;
+
+      ptrs[n] = malloc(sizeof(char) * (j+1));    // allocate memory for string with room for \0
+
+      for(j = 1; j < str_length; j++)            // put string into ptrs
+        ptrs[n][j] = str[i+j];
+      ptrs[n][j+1] = '\0';
+
+      i += j;                                    // move i to end of item
+    }
+    else // handle int
+    {
+      for(j = 0; str[i+j] != ','; j++)           // get length of number
+        string_len = j;
+
+      int_string = malloc(sizeof(char) * (j+1)); // allocate memory for number string
+
+      for(j = 0; str[i+j] != ','; j++)
+        int_string[j] = str[i+j];                // put number in int_string
+      
+      ptrs[n] = malloc(sizeof(strtol(*int_string)));
+      *ptrs[n] = strtol(*int_string);
+      
+      free(int_string);                          // free memory
+
+      i += j;                                    // move i to end of item
     }
   }
 
   return
 }
 
-void * list(char *args) 
+List list(char *args) 
 {
 
 /* 
 creates (struct) list, 
-accept list of args as a string:
+accept list as a string:
   my_list = list("5, 'legs', 'arms and dogs', 2 + 3"); 
 
 // TODO: add support for variables and pointers
+// NOTE: just this function needs a function header in `.h` file
 
 requres list struct definition ////
 */
 
-  void *list; // array of pointers to list objects
-  int length  // length of the list
+  List list;   // list to return
+  void *arr;   // array of pointers to list objects
+  int length;  // length of the list
 
-  length = count(args);
+  length = list_count(args);
 
-  list = malloc(length * sizeof(void *));
+  arr = malloc(length * sizeof(void *));
 
-  parse(args, list); // parse args, allocate memory for each item, put pointers to item into list //// write parse
+  list_parse(args, arr);
+  
+  list.length = length;
+  list.list_arr = arr;
 
   return list;
 }
 
+void list_get()
+{
+  return;
+}
 
+void list_free()
+{
+  return;
+}
 
 ////////////////////////////////////////////////////////////////////////////////
