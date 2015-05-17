@@ -17,10 +17,12 @@
 #include <ctype.h>
 
 ///////////////////////////////////////////////////////////////////////////////
+/////                               LISTS                                 /////
+///////////////////////////////////////////////////////////////////////////////
 
 typedef struct {
   int length = 0;
-  void *list_arr;
+  void *list;
 } List;
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -72,7 +74,7 @@ void list_parse(char *str, void *ptrs)
 
       ptrs[n] = malloc(sizeof(char) * (j+1));    // allocate memory for string with room for \0
 
-      for(j = 1; j < str_length; j++)            // put string into ptrs
+      for(j = 1; j < str_length; j++)            // put string in ptrs
         ptrs[n][j] = str[i+j];
       ptrs[n][j+1] = '\0';
 
@@ -96,22 +98,19 @@ void list_parse(char *str, void *ptrs)
       i += j;                                    // move i to end of item
     }
   }
-
-  return
-}
-
-List list(char *args) 
-{
-
+  
+  ptrs[n+1] = NULL;
 /* 
 creates (struct) list, 
 accept list as a string:
   my_list = list("5, 'legs', 'arms and dogs', 2 + 3"); 
+access list as:
+  **my_list.list[n];
+free list with:
+  list_free(my_list.list);
 
 // TODO: add support for variables and pointers
-// NOTE: just this function needs a function header in `.h` file
-
-requres list struct definition ////
+// NOTE: this function needs a function header in `.h` file
 */
 
   List list;   // list to return
@@ -125,19 +124,101 @@ requres list struct definition ////
   list_parse(args, arr);
   
   list.length = length;
-  list.list_arr = arr;
+  list.list = arr;
 
   return list;
 }
 
-void list_get()
+void list_free(arr)
 {
+// NOTE: this function needs a function header in `.h` file
+  int i = 0;
+
+  if(!arr)
+    return;
+  while(arr[i])
+    free(arr[i++]);
   return;
 }
 
-void list_free()
+///////////////////////////////////////////////////////////////////////////////
+/////                               TESTS                                 /////
+///////////////////////////////////////////////////////////////////////////////
+
+// List Tests
+int list_test1()
 {
-  return;
+  int i = 0;
+  List my_list;
+ 
+  my_list = list("5, 6, 'dog', 'leg', 2, 'nine'");
+
+  printf("List Test 1:\n");
+  for(i = 0; i <= my_list.length; i++)
+    printf("%s\n", **my_list.list[i]);
+  printf("End List Test 1\n");
+
+  list_free(mylist.list);
+
+  return 0;
 }
 
-////////////////////////////////////////////////////////////////////////////////
+int list_test2()
+{
+  int i = 0;
+  List my_list;
+ 
+  my_list = list("7");
+
+  printf("List Test 2:\n");
+  for(i = 0; i <= my_list.length; i++)
+    printf("%s\n", **my_list.list[i]);
+  printf("End List Test 2\n");
+
+  list_free(mylist.list);
+
+  return 0;
+}
+
+int list_test3()
+{
+  int i = 0;
+  List my_list;
+ 
+  my_list = list("'orangutans are, neat'");
+
+  printf("List Test 3:\n");
+  for(i = 0; i <= my_list.length; i++)
+    printf("%s\n", **my_list.list[i]);
+  printf("End List Test 3\n");
+
+  list_free(mylist.list);
+
+  return 0;
+}
+
+int list_test4()
+{
+  int i = 0;
+  List my_list;
+ 
+  my_list = list("");
+
+  printf("List Test 4:\n");
+  for(i = 0; i <= my_list.length; i++)
+    printf("%s\n", **my_list.list[i]);
+  printf("End List Test 4\n");
+
+  list_free(mylist.list);
+
+  return 0;
+}
+
+int main()
+{
+  list_test1();
+  list_test2();
+  list_test3();
+  list_test4();
+  return 0;
+}
