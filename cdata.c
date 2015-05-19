@@ -20,8 +20,8 @@
 /////                               LISTS                                 /////
 ///////////////////////////////////////////////////////////////////////////////
 
-typedef struct {
-  int length = 0;
+typedef struct{
+  int length;
   void *list;
 } List;
 
@@ -83,7 +83,7 @@ void list_parse(char *str, void *ptrs)
     else // handle int
     {
       for(j = 0; str[i+j] != ','; j++)           // get length of number
-        string_len = j;
+        string_length = j;
 
       int_string = malloc(sizeof(char) * (j+1)); // allocate memory for number string
 
